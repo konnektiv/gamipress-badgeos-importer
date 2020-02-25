@@ -667,8 +667,13 @@ function gamipress_badgeos_importer_ajax_import_logs() {
         }
 
         if( is_gamipress_upgraded_to( '1.4.7' ) ) {
-            // BadgeOS doesn't store trigger type data, so there is no way to get it
-            $log_data['trigger_type'] = __( '(no trigger)', 'gamipress' );
+		// try to extract trigger type from log title
+		preg_match('/.*triggered\s([a-z_]*)\s.*/', $log->post_title, $matches );
+		if ( count( $matches ) > 1 ) {
+			$log_data['trigger_type'] = $matches[1];
+		} else {
+			$log_data['trigger_type'] = __( '(no trigger)', 'gamipress' );
+		}
         }
 
         // Insert from posts to gamipress_logs table
